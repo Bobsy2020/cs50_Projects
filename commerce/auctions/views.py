@@ -12,6 +12,7 @@ from auctions.forms import ListingForm
 
 
 def index(request):
+
     return render(request, "auctions/index.html")
 
 
@@ -81,6 +82,7 @@ def create(request):
             lastimage= Listing.objects.last()
             imagefile= lastimage.image
 
+            form.instance.created_by = request.user
             form.save()
 
             return render(request, "auctions/create.html", {
