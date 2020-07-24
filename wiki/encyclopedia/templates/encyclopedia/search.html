@@ -1,0 +1,20 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Search Results
+{% endblock %}
+
+{% block body %}
+{% if not titles %}
+    No results found.
+{% else %}
+    <ul>
+        {% for title in titles %}
+            <li>
+                <a href="/wiki/{{ title }}" >{{ title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% endblock %}

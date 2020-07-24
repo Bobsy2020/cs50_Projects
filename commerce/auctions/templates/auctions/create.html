@@ -1,0 +1,29 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+<h1>Create a new listing</h1>
+
+<form enctype="multipart/form-data" method="POST" action="">
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="form-group">
+            <div class="col-3">
+                <label>{{ field.label }}</label>
+            </div>
+            <div class="col-5">
+                {{ field }}
+            </div>
+        </div>
+    {% endfor %} 
+    <br>
+    <input type="submit" value="Upload"/>
+
+    <br><br>
+        <img src='{{ MEDIA_URL }}{{ imagefile }}'>
+    <br><br>
+</form>
+
+
+
+{% endblock %}
