@@ -96,7 +96,7 @@ def create(request):
 
 @login_required
 def listing(request, pk, method="POST"):
-    objects = models.Manager() 
+    
     if request.method == "POST":
         return HttpResponse("TODO")
     else:
