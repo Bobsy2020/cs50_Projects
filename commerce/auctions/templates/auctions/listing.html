@@ -1,0 +1,34 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h1>Listing: {{ listing.title }}</h1>
+        <div class="row">
+            <div class="col-md-3">
+                <img src="/media/{{ listing.image }}" class="img-fluid" alt="no image">
+            </div>
+            <div class="col-md-1">
+
+            </div>
+            <div class="col-md-4">
+                
+                    
+                    <p>Description: {{ listing.description }}</p>
+                    <p>Category: {{ listing.category }}</p>
+                    <p>Listed by: <a href="#">{{ listing.created_by }}</a></p>
+                    <p><small class="text-muted">Created: {{ listing.created }}</small></p>
+                    <br>
+                    <h4>Current Price: {{ listing.price }}</h4>
+                    
+                    <!-- <form action="{% url 'edit' title %}" method="POST"></form> -->
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" aria-label="Text input with segmented dropdown button">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary">Place Bid</button>
+                            </div>
+                        </div>
+                    
+                    
+            </div>
+        </div>
+    
+{% endblock %}

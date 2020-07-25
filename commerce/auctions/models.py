@@ -22,6 +22,7 @@ class Listing(models.Model):
     active = models.BooleanField(default = True)
     created = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User,editable=False,null=True,blank=True, on_delete=models.CASCADE)
+    objects = models.Manager()
     
     def __str__(self):
         #return self.title

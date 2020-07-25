@@ -5,8 +5,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Listing
-#from .models import Listing
+from .models import User, Listing, category
+from auctions.models import Listing
 
 from auctions.forms import ListingForm
 
@@ -81,20 +81,12 @@ def create(request):
         # Check if the form is valid:
         if form.is_valid():
             
-            lastimage= Listing.object.last()
-            imagefile= lastimage.image
-
             form.instance.created_by = request.user
             form.save()
 
             return render(request, "auctions/create.html", {
                 'form': form,
-                'imagefile': imagefile
             })
-            # redirect to a new URL:
-            # return HttpResponseRedirect(reverse('index') )
-            #return HttpResponse("TODO")
-        # return HttpResponse(form)
     else:
         return render(request, "auctions/create.html", {
             'form':ListingForm
@@ -102,4 +94,13 @@ def create(request):
         })
      
 
-
+@login_required
+def listing(request, pk, method="POST"):
+    objects = models.Manager() 
+    if request.method == "POST":
+        return HttpResponse("TODO")
+    else:
+        listing = Listing.objects.get(id=pk)
+        return render(request, "auctions/listing.html", {
+            'listing':listing
+        })

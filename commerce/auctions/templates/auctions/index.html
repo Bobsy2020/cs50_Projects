@@ -13,8 +13,8 @@
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
-                            <h5 class="card-title"><a href="#">{{ item.title }}</a></h5>
-                            <p class="card-text">{{ item.price }}</p>
+                            <h5 class="card-title"><a href="listing/{{ item.id }}">{{ item.title }}</a></h5>
+                            <p class="card-text">Price: {{ item.price }}</p>
                             <p class="card-text">{{ item.description }}</p>
                             <p class="card-text">{{ item.active }}</p>
                             <p class="card-text"><small class="text-muted">Created: {{ item.created }}</small></p>
