@@ -5,15 +5,17 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
-from .models import Listing
+from .models import User, Listing
+#from .models import Listing
 
 from auctions.forms import ListingForm
 
 
 def index(request):
 
-    return render(request, "auctions/index.html")
+    return render(request, "auctions/index.html", {
+        'listings':Listing.objects.all()
+    })
 
 
 def login_view(request):
@@ -79,7 +81,7 @@ def create(request):
         # Check if the form is valid:
         if form.is_valid():
             
-            lastimage= Listing.objects.last()
+            lastimage= Listing.object.last()
             imagefile= lastimage.image
 
             form.instance.created_by = request.user
