@@ -20,10 +20,11 @@
                     <h4>Current Price: {{ listing.price }}</h4>
                     
                     <form action="" method="POST">
+                        {% csrf_token %}
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" aria-label="Text input with segmented dropdown button">
+                            <input type="text" class="form-control" name="bid_price" id="bid_price">
                             <div class="input-group-append">
-                                <button type="button" class="btn btn-outline-secondary">Place Bid</button>
+                                <button type="submit" class="btn btn-outline-secondary">Place Bid</button>
                             </div>
                         </div>
                     </form> 

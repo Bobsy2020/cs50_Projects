@@ -1,12 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
+from django.db.models import Max
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Listing, category
-from auctions.models import Listing
+from .models import User, Listing, category, Bids
+# from auctions.models import Listing
 
 from auctions.forms import ListingForm
 
@@ -98,7 +99,50 @@ def create(request):
 def listing(request, pk, method="POST"):
     
     if request.method == "POST":
-        return HttpResponse("TODO")
+        
+        bid_price = request.POST.get("bid_price")
+        bid_by = request.user
+        # create an instance of the Listing object
+        listing = Listing.objects.get(id=pk)
+
+        #check if there are any bids for this listing
+        # return HttpResponse(Bids.objects.all().aggregate(Max('bid_price'))
+        mp = Bids.objects.filter(listing = pk)
+        if mp:
+            maxval=mp.aggregate(maxval=Max('bid_price'))['maxval']
+            return HttpResponse(maxval)
+            # return HttpResponse(mp.aggregate(maxval=Max('bid_price'))['maxval'])
+        else:
+            return HttpResponse("No Record") 
+        #max_price = Bids.objects.filter(listing_id = pk).aggregate(price=Max('bid_price')
+        #max_price.get(price)
+
+        #if bid_price > max_price:
+
+        #    b = Bids(
+        #        listing=listing, 
+        #        bid_by=bid_by,
+        #       bid_price=bid_price
+        #        )
+        #    b.save()
+
+            
+        #else:
+            #return HttpResponse("err")
+
+        # check that bid is above the opening bid and above the latest bid
+        
+        
+        # enter bid
+        
+
+        #Bids.objects.create(
+        #    listing=pk,
+        #    bid_by=request.user,
+        #    bid_price=bid_price
+
+        #)
+        return HttpResponse(bid_price + str(listing) + str(bid_by))
     else:
         listing = Listing.objects.get(id=pk)
         return render(request, "auctions/listing.html", {

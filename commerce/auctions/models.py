@@ -23,9 +23,18 @@ class Listing(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User,editable=False,null=True,blank=True, on_delete=models.CASCADE)
     objects = models.Manager()
-    
+
     def __str__(self):
         #return self.title
         return f"{self.title}: {self.description} @ {self.price}"
 
 
+class Bids(models.Model):
+    listing = models.ForeignKey(Listing,  on_delete=models.CASCADE, related_name='+')
+    bid_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='+')
+    bid_price = MoneyField(max_digits=7, decimal_places=2, default_currency='USD')
+    bid_time = models.DateTimeField(auto_now_add=True)
+    objects = models.Manager()
+
+    def __str__(self):
+        return self.bid_price
