@@ -15,6 +15,6 @@ def maxval(pk):
     if mp:
         maxval=mp.aggregate(maxval=Max('bid_price'))['maxval']
     else:
-        #maxval=Listing.objects.filter(id=pk).price
         maxval=Listing.objects.values_list('price', flat=True).get(id=pk)
     return round(float(maxval),2)
+
