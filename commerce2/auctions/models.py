@@ -27,6 +27,7 @@ class Product(models.Model):
     active = models.BooleanField(default = True)
     created = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User,editable=False,null=True,blank=True, on_delete=models.CASCADE)
+    objects = models.Manager()
     # def current_price(self):
     #    "Returns the current price"
     #    mp = Bids.objects.filter(listing = self.pk)
@@ -44,6 +45,7 @@ class Product(models.Model):
 class Watchlist(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    # objects = models.Manager()
 	
 	def __str__(self):
 		return "USER_ID:" + str(self.user) + " PRODUCT_ID:" + str(self.product)

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/auctions/product.css">
+</head>
+<body>
+{% now "Y-m-d-H-i-s" as todays_date %}
+<div class="container-fluid">
+{% load custom_tags %}
+{% for product in products %}
+    <div class="card">
+        <img class="card-img-top img-fluid" src='/media/{{ product.image }}' alt="Card image">
+        <div class="card-body">
+            <div id="item_name">
+                <h4 class="card-title text-center">{{ product.title }}</h4><hr>
+            </div>
+            <p class="card-text">{{ product.description }}</p>
+            <h4 class="card-title text-center">€{{auction|current_price}}</h4>
+            <div>
+                <!-- BID NOW BUTTON -->
+                <button type="button" class="btn btn-primary bid_now_button" onclick="location.href='/auctions/bid/{{ product.id }}'">Bid Now</button>
+            </div>
+                   
+            <div>
+                <!-- WATCH BUTTON -->
+                <button type="button" class="btn btn-outline-primary watch_button" onclick="location.href='/auctions/watchlist/{{ product.id }}'">
+                {% if watchlist %}
+                    {% if watchlist|search:product.id%}
+                        Unwatch
+                    {% else %}
+                        Watch
+                    {% endif %}
+                {% else %}
+                    Watch
+                {% endif %}
+                </button>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+</body>
+</html>
