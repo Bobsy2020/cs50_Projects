@@ -17,7 +17,7 @@ class Product(models.Model):
     title= models.CharField(max_length=60)
     description = models.TextField(max_length=256)
     price = models.DecimalField(max_digits=7, decimal_places=2)
-    price_currency = models.CharField(max_length=3, null=True, blank=True, default=locale.getdefaultlocale(locale.LC_MONETARY))
+    price_currency = models.CharField(max_length=60, null=True, blank=True, default=locale.getdefaultlocale(locale.LC_MONETARY))
     image= models.ImageField(upload_to='images/', null=True, blank=True, verbose_name="Upload image")
     # category = models.ForeignKey(category, null=True, blank=True, on_delete=models.CASCADE, related_name='+')
     category = models.CharField(
@@ -49,3 +49,12 @@ class Watchlist(models.Model):
 	
 	def __str__(self):
 		return "USER_ID:" + str(self.user) + " PRODUCT_ID:" + str(self.product)
+
+class Bids(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount_bid = models.DecimalField(max_digits=7, decimal_places=2)
+    number_of_bids = models.IntegerField()
+    
+    def __str__(self):
+	    return "USER_ID:" + str(self.user) + " PRODUCT_ID:" + str(self.product) + " AMOUNT_BID:" + str(self.amount_bid)

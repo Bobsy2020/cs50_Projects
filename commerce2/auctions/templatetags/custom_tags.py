@@ -1,15 +1,16 @@
 from django import template
 from ..models import User
 from django.utils import timezone
+from django.http import HttpResponse
 
 register = template.Library()
 
 @register.filter(name='search')
 def search(value, id):
+    # return HttpResponse("got here")
     for v in value:
-        if v.id == id:
+        if v.product == id:
             return True
-
     return False
 
 @register.filter(name="current_price")
