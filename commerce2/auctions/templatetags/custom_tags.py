@@ -1,9 +1,13 @@
 from django import template
-from ..models import User
+from ..models import User, Bids, Product, Watchlist
+import locale
+
 from django.utils import timezone
 from django.http import HttpResponse
 
 register = template.Library()
+
+locale.setlocale(locale.LC_ALL, '')
 
 @register.filter(name='search')
 def search(value, id):
@@ -14,11 +18,22 @@ def search(value, id):
     return False
 
 @register.filter(name="current_price")
-def current_price(value):
-    # current_cost = 0.20 + (value.number_of_bids * 0.20)
-    # current_cost = "%0.2f" % current_cost
-    current_cost = 100 * 0.5
+def current_price(id):
+    mp = Bids.objects.filter(product = id)
+    
+    if mp:
+        #price=mp.amount_bid
+        price=Bids.objects.values_list('amount_bid', flat=True).get(product_id = id)
+    else:
+        price=Product.objects.values_list('price', flat=True).get(id=id)
+    current_cost =  locale.currency(price, grouping=True)
     return current_cost
+
+@register.filter(name="watchlist_count")
+def watchlist_count(id):
+    watchlist_count = Watchlist.objects.filter(user=id).count()
+    return watchlist_count
+
 
 @register.filter(name="time_left")
 def time_left(value):

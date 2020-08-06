@@ -17,16 +17,21 @@
                                 <h4 class="card-title text-center"><a href="product/{{ product.id }}">{{ product.title }}</a></h4><hr>
                             </div>
                             <p class="card-text">{{ product.description }}</p>
-                            <h4 class="card-title text-center">Current Price: {{ product.price }}</h4>
-                            <h4 class="card-title text-center">£{{auction|current_price}}</h4>
+                            <h4 class="card-title text-center">Current Price: {{product.id|current_price}}</h4>
+
+                            <!-- BID NOW BUTTON -->
+                            <p><button 
+                                type="button" class="btn btn-primary btn-block" 
+                                onclick="location.href='/auctions/bids/{{ product.id }}'"
+                                
+                                    >Bid Now
+                                </button>
+                            </p>
                             
-                                <!-- BID NOW BUTTON -->
-                                <p><button type="button" class="btn btn-primary btn-block" onclick="location.href='/auctions/bid/{{ product.id }}'">Bid Now</button></p>
-                            
-                            
+                                    
                              <!-- WATCH BUTTON -->
                             <p><button type="button" class="btn btn-outline-primary btn-block"
-                                 onclick="location.href='/auctions/watchlist/{{ product.id }}'">
+                                 onclick="location.href='/auctions/watchlist/{{ product.id }}/index'">
                                 {% if watchlist %}
                                     {% if watchlist|search:product %}
                                         Unwatch

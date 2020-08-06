@@ -1,13 +1,17 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
+from django.db.models import F
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from .models import User, Product, Watchlist
+from .models import User, Product, Watchlist, Bids
 from auctions.forms import ProductForm
 from itertools import chain
+from auctions.templatetags.custom_tags import current_price
+import locale
+
 
 
 def index(request):
@@ -79,9 +83,11 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
-def watchlist(request, product_id):
+
+@login_required
+def watchlist(request, product_id, page):
     user = request.user.id
-    w = Watchlist.objects.filter(product_id=product_id)
+    w = Watchlist.objects.filter(product_id=product_id).filter(user_id=user)
     if not w:
         watchlist_item = Watchlist(
         product_id = product_id,
@@ -91,12 +97,27 @@ def watchlist(request, product_id):
         
     else:
         w.delete()
-
-    return HttpResponseRedirect(reverse("index"))
+    # return the to the page that the function was called from
+    if page == "bids":
+        return HttpResponseRedirect(reverse('bids', args=(product_id,)))
+    return HttpResponseRedirect(reverse(page))
     
 
+
 def watchlist_page(request):
-   return HttpResponse("TODO")
+    return HttpResponse("TODO")
+    user = request.user.id
+    
+    products = Product.objects.filter(active=True)
+    watchlist = Watchlist.objects.filter(user_id=user)
+
+    return render(request, 'auctions/index.html', {
+                'products':products,
+                'watchlist':watchlist
+            })
+
+    
+   
    # return index(request)
 
 def filter_categories(request, category):
@@ -128,14 +149,19 @@ def create(request):
         })
 
 @login_required
-def product(request, pk, method="POST"):
-    maxval = util.maxval(pk)
-    if request.method == "POST":  
+def bids(request, product_id, method="POST"):
+    currency_symbol = locale.currency(0.0)
+    currency_symbol = str(currency_symbol).replace("0.00", "")
+    
+    # return HttpResponse(currency_symbol)
+    if request.method=="POST":
         bid_price = request.POST.get("bid_price")
         bid_by = request.user
-        # create an instance of the Listing object
-        product = Product.objects.get(id=pk)
+        # create an instance of the Product object
+        product = Product.objects.get(id=product_id)
+        product_price = locale.atof(current_price(product.id)[1:])
         
+
         # check to see if the bid is valid (ie. > than the current max)
         # if there is nothing entered then display an error banner
         if len(bid_price) == 0:
@@ -143,33 +169,93 @@ def product(request, pk, method="POST"):
             alert = "alert alert-warning"
         # if the current price is greater that the bid price then 
         # display an error message
-        elif maxval > float(bid_price):
+        elif float(product_price) > float(bid_price):
             message = "Amount bid must be more than the current price."
             alert = "alert alert-warning"
-                        
         else:
             # add the record to the Bids table
-            b = Bids(
-                listing = listing,
-                bid_by=bid_by,
-                bid_price=bid_price
-            )
-            b.save()
+            if Bids.objects.filter(product=product_id):
+                Bids.objects.filter(product=product_id).update(
+                    user=bid_by,
+                    amount_bid=bid_price,
+                    number_of_bids = F('number_of_bids') + 1
+                )
+            else:
+                b = Bids(
+                    product = product,
+                    user=bid_by,
+                    amount_bid=bid_price,
+                )
+                b.save()
             
             message = "Bid accepted"
             alert = "alert alert-success"
-            maxval== util.maxval(pk)
             # return redirect('/listing/'+str(pk))
-            return redirect('listing', pk=pk)
-        return render(request, "auctions/listing.html", {
+            # return redirect('listing', pk=pk)
+            return HttpResponseRedirect(reverse('bids', args=(product_id,)))
+        return render(request, "auctions/bids.html", {
             'message': message,
             'alert': alert,
-            'listing':listing,
-            'maxval':maxval
+            'product':product,
+            'currency':currency_symbol
+            
         })
+        # return HttpResponse("TODO")
     else:
-        listing = Listing.objects.get(id=pk)
-        return render(request, "auctions/listing.html", {
-            'listing':listing,
-            'maxval':maxval
-        })
+        product = Product.objects.get(id=product_id)
+        watchlist = Watchlist.objects.filter(user_id=request.user)
+
+        return render(request, "auctions/bids.html", { 
+            'product':product,
+            'watchlist':watchlist,
+            'currency':currency_symbol
+       })
+#        return HttpResponse(product_id)
+
+
+# @login_required
+#def bids(request, pk, method="POST"):
+#    maxval = util.maxval(pk)
+#    if request.method == "POST":  
+#        bid_price = request.POST.get("bid_price")
+#        bid_by = request.user
+        # create an instance of the Listing object
+#        product = Product.objects.get(id=pk)
+        
+        # check to see if the bid is valid (ie. > than the current max)
+        # if there is nothing entered then display an error banner
+#        if len(bid_price) == 0:
+#            message = "You must enter a bid value."
+#            alert = "alert alert-warning"
+#        # if the current price is greater that the bid price then 
+#        # display an error message
+#        elif maxval > float(bid_price):
+#            message = "Amount bid must be more than the current price."
+#            alert = "alert alert-warning"
+#                        
+#        else:
+#            # add the record to the Bids table
+#            b = Bids(
+#                listing = listing,
+#                bid_by=bid_by,
+#                bid_price=bid_price
+#            )
+#            b.save()
+#            
+#            message = "Bid accepted"
+#            alert = "alert alert-success"
+#            maxval== util.maxval(pk)
+            # return redirect('/listing/'+str(pk))
+#            return redirect('listing', pk=pk)
+#        return render(request, "auctions/listing.html", {
+#            'message': message,
+#            'alert': alert,
+#            'listing':listing,
+#            'maxval':maxval
+#        })
+#    else:
+#        listing = Listing.objects.get(id=pk)
+#        return render(request, "auctions/listing.html", {
+#            'listing':listing,
+#            'maxval':maxval
+#        })

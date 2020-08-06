@@ -1,0 +1,52 @@
+{% extends "auctions/layout.html" %}
+{% load custom_tags %}
+{% block body %}
+    <div class="{{ alert }}" role="alert">
+        {{ message }}
+    </div>
+    
+        <h2>Product: {{ product.title }}</h2>
+        <div class="row">
+            <div class="col-md-3">
+                <img src="/media/{{ product.image }}" class="img-fluid" alt="no image">
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-4">
+                
+                    
+                <p>Description: {{ product.description }}</p>
+                <p>Category: {{ product.category }}</p>
+                <p>Listed by: <a href="#">{{ product.created_by }}</a></p>
+                <p><small class="text-muted">Created: {{ product.created }}</small></p>
+                <br>
+                <h4>Current Price: {{ product.id|current_price }}</h4>
+                
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">{{ currency }}</span>
+                        </div>
+                        <input type="number" step="any" min="0" class="form-control" name="bid_price" id="bid_price">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-primary">Place Bid</button>
+                        </div>
+                    </div>
+                </form> 
+               
+                <button type="button" class="btn btn-outline-primary btn-sm btn-block"
+                    onclick="location.href='/auctions/watchlist/{{ product.id }}/bids'">
+                    {% if watchlist %}
+                        {% if watchlist|search:product %}
+                            Unwatch
+                        {% else %}
+                            Watch
+                        {% endif %}
+                    {% else %}
+                        Watch
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+    
+{% endblock %}

@@ -54,7 +54,7 @@ class Bids(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount_bid = models.DecimalField(max_digits=7, decimal_places=2)
-    number_of_bids = models.IntegerField()
+    number_of_bids = models.IntegerField(default=1)
     
     def __str__(self):
 	    return "USER_ID:" + str(self.user) + " PRODUCT_ID:" + str(self.product) + " AMOUNT_BID:" + str(self.amount_bid)
