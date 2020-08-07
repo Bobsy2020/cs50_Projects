@@ -11,6 +11,7 @@ urlpatterns = [
     path('category/<str:category>/', views.filter_categories, name='filter_categories'),
     path('auctions/watchlist/<int:product_id>/<str:page>', views.watchlist, name='watchlist'),
     path('auctions/bids/<int:product_id>/', views.bids, name='bids'),
+    path("auctions/close/<int:product_id>", views.close, name="close"),
     #path('auctions/<int:product_id>/bids/', views.bids, name='bids'),
     #path("product/<int:pk>", views.product, name="product"),
     #path('balance/', views.balance, name='balance'),

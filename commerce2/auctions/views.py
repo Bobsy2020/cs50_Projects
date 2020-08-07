@@ -28,6 +28,7 @@ def index(request):
     watchlist = Watchlist.objects.filter(user_id=user)
 
     return render(request, 'auctions/index.html', {
+                'page_title':'Active Listings',
                 'products':products,
                 'watchlist':watchlist
             })
@@ -105,20 +106,32 @@ def watchlist(request, product_id, page):
 
 
 def watchlist_page(request):
-    return HttpResponse("TODO")
-    user = request.user.id
+    #return HttpResponse("TODO")
+    #user = request.user.id
     
-    products = Product.objects.filter(active=True)
-    watchlist = Watchlist.objects.filter(user_id=user)
 
-    return render(request, 'auctions/index.html', {
-                'products':products,
-                'watchlist':watchlist
+    try:
+        
+            #return HttpResponse("TODO")
+            # user = User.objects.filter(username=request.session['username'])
+            user = request.user.id
+            
+            w = Watchlist.objects.filter(user_id=user)
+            
+            products = Product.objects.none()
+            for item in w:
+                p = Product.objects.filter(id=item.product.id).filter(active=True)
+                
+                products = list(chain(products, p))
+            # return HttpResponse(products)
+            return render(request, 'auctions/index.html', {
+                'page_title':'Watchlist',
+                'products': products,
+                #'user': user[0],
+                'watchlist':w
             })
-
-    
-   
-   # return index(request)
+    except KeyError:
+        return HttpResponseRedirect(reverse('index'))
 
 def filter_categories(request, category):
    return HttpResponse("TODO")
@@ -128,8 +141,6 @@ def filter_categories(request, category):
 def create(request):
     
     if request.method == "POST":
-        #return HttpResponse("got to function")
-        
         # Create a form instance and populate it with data from the request (binding):
         form = ProductForm(request.POST or None, request.FILES or None)
 
@@ -204,58 +215,20 @@ def bids(request, product_id, method="POST"):
     else:
         product = Product.objects.get(id=product_id)
         watchlist = Watchlist.objects.filter(user_id=request.user)
+        
 
         return render(request, "auctions/bids.html", { 
             'product':product,
             'watchlist':watchlist,
             'currency':currency_symbol
+            
        })
-#        return HttpResponse(product_id)
 
 
-# @login_required
-#def bids(request, pk, method="POST"):
-#    maxval = util.maxval(pk)
-#    if request.method == "POST":  
-#        bid_price = request.POST.get("bid_price")
-#        bid_by = request.user
-        # create an instance of the Listing object
-#        product = Product.objects.get(id=pk)
-        
-        # check to see if the bid is valid (ie. > than the current max)
-        # if there is nothing entered then display an error banner
-#        if len(bid_price) == 0:
-#            message = "You must enter a bid value."
-#            alert = "alert alert-warning"
-#        # if the current price is greater that the bid price then 
-#        # display an error message
-#        elif maxval > float(bid_price):
-#            message = "Amount bid must be more than the current price."
-#            alert = "alert alert-warning"
-#                        
-#        else:
-#            # add the record to the Bids table
-#            b = Bids(
-#                listing = listing,
-#                bid_by=bid_by,
-#                bid_price=bid_price
-#            )
-#            b.save()
-#            
-#            message = "Bid accepted"
-#            alert = "alert alert-success"
-#            maxval== util.maxval(pk)
-            # return redirect('/listing/'+str(pk))
-#            return redirect('listing', pk=pk)
-#        return render(request, "auctions/listing.html", {
-#            'message': message,
-#            'alert': alert,
-#            'listing':listing,
-#            'maxval':maxval
-#        })
-#    else:
-#        listing = Listing.objects.get(id=pk)
-#        return render(request, "auctions/listing.html", {
-#            'listing':listing,
-#            'maxval':maxval
-#        })
+def close(request, product_id):
+    # product_id = self.kwargs.get('product_id')
+    Product.objects.filter(id=product_id).update(
+                    active=False
+                )
+    return HttpResponseRedirect(reverse('index'))
+    

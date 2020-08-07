@@ -44,7 +44,9 @@ class Product(models.Model):
 
 class Watchlist(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
+    #product = models.ManyToManyField(Product, blank=True, related_name='watchlist_product')
 	product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    
     # objects = models.Manager()
 	
 	def __str__(self):

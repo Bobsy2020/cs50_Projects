@@ -1,7 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-<h2>Active Listings</h2>
+<h2>{{ page_title }}</h2>
 {% load custom_tags %}
         
     {% for product in products %}
@@ -9,7 +9,7 @@
             <div class="card mb-3" style="max-width: 540px;">
                 <div class="row no-gutters">
                     <div class="col-md-4">
-                        <img src="media/{{ product.image }}" class="card-img" alt="no image">
+                        <img src="/media/{{ product.image }}" class="card-img" alt="no image">
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
