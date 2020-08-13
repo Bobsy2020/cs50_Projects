@@ -47,13 +47,37 @@
                     {% endif %}
                 </button>
 
+                <button type="submit" class="btn btn-outline-primary btn-sm btn-block"
+                    onclick="location.href='/auctions/comments/{{ product.id }}'">
+                    <i class="fas fa-plus"></i> Add Comment
+                </button>
+
                 {% if product.created_by.id == request.user.id %}
                 
                     <button type="submit" class="btn btn-primary btn-sm btn-block"
                     onclick="location.href='/auctions/close/{{ product.id }}'">Close Auction</button>
                 
                 {% endif %}
+                
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+                
+
+                <br>
+                <h6 style="text-decoration: underline;">Comments</h6>
+                
+                    {% for comment in comments %}
+                        <p>{{ comment.comment }}</p>
+                        <p><small class="text-muted">Entered by: <a href="#">{{ comment.user }}</a> on {{ comment.created }}</small></p>
+                        <hr>
+                    {% empty %}
+                        <p>No Comments.</p>
+                    {% endfor %}
+
+                    
+                
             </div>
         </div>
-    
+        
 {% endblock %}

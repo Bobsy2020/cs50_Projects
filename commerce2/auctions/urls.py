@@ -12,6 +12,7 @@ urlpatterns = [
     path('auctions/watchlist/<int:product_id>/<str:page>', views.watchlist, name='watchlist'),
     path('auctions/bids/<int:product_id>/', views.bids, name='bids'),
     path("auctions/close/<int:product_id>", views.close, name="close"),
+    path("auctions/comments/<int:product_id>", views.comments, name="comments"),
     #path('auctions/<int:product_id>/bids/', views.bids, name='bids'),
     #path("product/<int:pk>", views.product, name="product"),
     #path('balance/', views.balance, name='balance'),

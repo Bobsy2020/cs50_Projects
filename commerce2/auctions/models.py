@@ -28,23 +28,13 @@ class Product(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User,editable=False,null=True,blank=True, on_delete=models.CASCADE)
     objects = models.Manager()
-    # def current_price(self):
-    #    "Returns the current price"
-    #    mp = Bids.objects.filter(listing = self.pk)
-    #    if mp:
-    #        maxval=mp.aggregate(maxval=Max('bid_price'))['maxval']
-    #    else:
-    #        maxval=self.price
-    #    maxval = locale.currency(maxval, grouping=True)
-    #    return maxval
+    
 
     def __str__(self):
-        #return f"{self.title}: {self.description} @ {self.price}"
         return "ID:" + str(self.pk) + " " + self.title
 
 class Watchlist(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
-    #product = models.ManyToManyField(Product, blank=True, related_name='watchlist_product')
 	product = models.ForeignKey(Product, on_delete=models.CASCADE)
     
     # objects = models.Manager()
@@ -60,3 +50,12 @@ class Bids(models.Model):
     
     def __str__(self):
 	    return "USER_ID:" + str(self.user) + " PRODUCT_ID:" + str(self.product) + " AMOUNT_BID:" + str(self.amount_bid)
+
+class Comments(models.Model):
+    product = models.ForeignKey(Product, blank=True, related_name="comments", on_delete=models.CASCADE)
+    comment = models.TextField(max_length=2000)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+       return str(self.comment) 

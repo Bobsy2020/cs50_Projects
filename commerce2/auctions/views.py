@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from .models import User, Product, Watchlist, Bids
-from auctions.forms import ProductForm
+from auctions.forms import ProductForm, CommentForm
 from itertools import chain
 from auctions.templatetags.custom_tags import current_price
 import locale
@@ -215,13 +215,14 @@ def bids(request, product_id, method="POST"):
     else:
         product = Product.objects.get(id=product_id)
         watchlist = Watchlist.objects.filter(user_id=request.user)
+        comments = product.comments.all().order_by('-created')
         
 
         return render(request, "auctions/bids.html", { 
             'product':product,
             'watchlist':watchlist,
-            'currency':currency_symbol
-            
+            'currency':currency_symbol,
+            'comments':comments
        })
 
 
@@ -231,4 +232,28 @@ def close(request, product_id):
                     active=False
                 )
     return HttpResponseRedirect(reverse('index'))
-    
+
+@login_required
+def comments(request, product_id):
+    product = Product.objects.get(id=product_id)
+    if request.method == "POST":
+        # Create a form instance and populate it with data from the request (binding):
+        form = CommentForm(request.POST or None)
+
+        # Check if the form is valid:
+        if form.is_valid():
+            form.instance.product = product
+            form.instance.user = request.user
+            form.save()
+
+            return HttpResponseRedirect(reverse('bids', args=(product_id,)))
+            #return render(request, "auctions/bids {{ product.id }}.html", {
+            #    'form': form,
+            #})
+    else:
+        #return HttpResponseRedirect(reverse('bids', args=(product_id,)))
+        return render(request, "auctions/comments.html", {
+            'product':product,
+            'form':CommentForm
+            
+        })    
