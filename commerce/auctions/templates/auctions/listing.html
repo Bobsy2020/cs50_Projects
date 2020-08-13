@@ -20,7 +20,7 @@
                     <p>Listed by: <a href="#">{{ listing.created_by }}</a></p>
                     <p><small class="text-muted">Created: {{ listing.created }}</small></p>
                     <br>
-                    <h4>Current Price: {{ maxval }} {{ listing.price_currency }}</h4>
+                    <h4>Current Price: {{ listing.current_price }}</h4>
                     
                     <form action="" method="POST">
                         {% csrf_token %}
