@@ -1,0 +1,55 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<h2>{{ page_title }}</h2>
+{% load custom_tags %}
+        
+    {% for product in products %}
+        {% if product.active == True %}
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src="/media/{{ product.image }}" class="card-img" alt="no image">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <div id="item_name">
+                                <h4 class="card-title text-center"><a href="product/{{ product.id }}">{{ product.title }}</a></h4><hr>
+                            </div>
+                            <p class="card-text">{{ product.description }}</p>
+                            <h4 class="card-title text-center">Current Price: {{product.id|current_price}}</h4>
+
+                            <!-- BID NOW BUTTON -->
+                            <p><button 
+                                type="button" class="btn btn-primary btn-block" 
+                                onclick="location.href='/auctions/bids/{{ product.id }}'"
+                                
+                                    >Bid Now
+                                </button>
+                            </p>
+                            
+                                    
+                             <!-- WATCH BUTTON -->
+                            <p><button type="button" class="btn btn-outline-primary btn-block"
+                                 onclick="location.href='/auctions/watchlist/{{ product.id }}/index'">
+                                {% if watchlist %}
+                                    {% if watchlist|search:product %}
+                                        Unwatch
+                                    {% else %}
+                                        Watch
+                                    {% endif %}
+                                {% else %}
+                                    Watch
+                                {% endif %}
+                                </button></p>                            
+                            
+                            
+                            <p class="card-text"><small class="text-muted">Created: {{ product.created }}</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+
+{% endblock %}
