@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from .models import User, Product, Watchlist, Bids
+from .models import User, Product, Watchlist, Bids, Category
 from auctions.forms import ProductForm, CommentForm
 from itertools import chain
 from auctions.templatetags.custom_tags import current_price
@@ -134,7 +134,23 @@ def watchlist_page(request):
         return HttpResponseRedirect(reverse('index'))
 
 def filter_categories(request, category):
-   return HttpResponse("TODO")
+    user = request.user.id
+    
+    products = Product.objects.filter(active=True).filter(category=category)
+    watchlist = Watchlist.objects.filter(user_id=user)
+    
+    #category_name = Category.objects.filter(id=category)
+    categories = Category.objects.values_list("category", flat=True).get(id=category)
+    #return HttpResponse(categories)
+    pagetitle = f"Active Listings for Category : {categories}"
+
+    return render(request, 'auctions/index.html', {
+                'page_title':pagetitle,
+                'products':products,
+                'watchlist':watchlist
+            })
+
+    
    # return index(request)
 
 @login_required
@@ -257,3 +273,6 @@ def comments(request, product_id):
             'form':CommentForm
             
         })    
+
+
+    

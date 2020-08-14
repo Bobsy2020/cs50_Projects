@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Product, Watchlist, Bids, Comments
+from .models import User, Product, Watchlist, Bids, Comments, Category
 
 # Register your models here.
 
@@ -10,3 +10,4 @@ admin.site.register(Product)
 admin.site.register(Watchlist)
 admin.site.register(Bids)
 admin.site.register(Comments)
+admin.site.register(Category)

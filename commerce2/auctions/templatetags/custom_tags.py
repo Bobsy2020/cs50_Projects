@@ -35,6 +35,7 @@ def watchlist_count(id):
     return watchlist_count
 
 
+
 @register.filter(name="time_left")
 def time_left(value):
     """

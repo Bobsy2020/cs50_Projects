@@ -7,7 +7,7 @@ class User(AbstractUser):
     pass
 
 
-class category(models.Model):
+class Category(models.Model):
     category = models.CharField(max_length=60)
 
     def __str__(self):
@@ -26,7 +26,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=7, decimal_places=2)
     price_currency = models.CharField(max_length=60, null=True, blank=True, default=locale.getdefaultlocale(locale.LC_MONETARY))
     image= models.ImageField(upload_to='images/', null=True, blank=True, verbose_name="Upload image")
-    category = models.ForeignKey(category, null=True, blank=True, on_delete=models.CASCADE, related_name='+')
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE, related_name='+')
     #category = models.CharField(
 	#	max_length=3,
 	#	choices=CATEGORIES
