@@ -6,6 +6,13 @@ locale.setlocale(locale.LC_ALL, '')
 class User(AbstractUser):
     pass
 
+
+class Category(models.Model):
+    category = models.CharField(max_length=60)
+
+    def __str__(self):
+        return self.category
+
 class Product(models.Model):
     CATEGORIES = (
 		('LAP', 'Laptop'),
@@ -19,11 +26,11 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=7, decimal_places=2)
     price_currency = models.CharField(max_length=60, null=True, blank=True, default=locale.getdefaultlocale(locale.LC_MONETARY))
     image= models.ImageField(upload_to='images/', null=True, blank=True, verbose_name="Upload image")
-    # category = models.ForeignKey(category, null=True, blank=True, on_delete=models.CASCADE, related_name='+')
-    category = models.CharField(
-		max_length=3,
-		choices=CATEGORIES
-	)
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE, related_name='+')
+    #category = models.CharField(
+	#	max_length=3,
+	#	choices=CATEGORIES
+	#)
     active = models.BooleanField(default = True)
     created = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User,editable=False,null=True,blank=True, on_delete=models.CASCADE)

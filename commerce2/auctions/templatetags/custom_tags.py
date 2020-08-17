@@ -19,6 +19,12 @@ def search(value, id):
 
 @register.filter(name="current_price")
 def current_price(id):
+    """ 
+    Gets the current price
+    by either the lastest bid value or the original price.
+    Returns the value on the local currency.
+    """
+
     mp = Bids.objects.filter(product = id)
     
     if mp:
@@ -31,8 +37,10 @@ def current_price(id):
 
 @register.filter(name="watchlist_count")
 def watchlist_count(id):
-    watchlist_count = Watchlist.objects.filter(user=id).count()
+    watchlist_count = Watchlist.objects.filter(user=id).filter(product__active=True).count()
+    
     return watchlist_count
+
 
 
 @register.filter(name="time_left")
