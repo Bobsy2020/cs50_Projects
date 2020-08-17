@@ -9,6 +9,7 @@ class User(AbstractUser):
 
 class Category(models.Model):
     category = models.CharField(max_length=60)
+    objects = models.Manager()
 
     def __str__(self):
         return self.category
@@ -43,6 +44,7 @@ class Product(models.Model):
 class Watchlist(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    objects = models.Manager()
     
     # objects = models.Manager()
 	
@@ -54,6 +56,7 @@ class Bids(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount_bid = models.DecimalField(max_digits=7, decimal_places=2)
     number_of_bids = models.IntegerField(default=1)
+    objects = models.Manager()
     
     def __str__(self):
 	    return "USER_ID:" + str(self.user) + " PRODUCT_ID:" + str(self.product) + " AMOUNT_BID:" + str(self.amount_bid)
@@ -63,6 +66,7 @@ class Comments(models.Model):
     comment = models.TextField(max_length=2000)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
+    objects = models.Manager()
 
     def __str__(self):
        return str(self.comment) 

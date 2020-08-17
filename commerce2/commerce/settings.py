@@ -72,8 +72,6 @@ TEMPLATES = [
 
 
 
-
-
 WSGI_APPLICATION = 'commerce.wsgi.application'
 
 
